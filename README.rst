@@ -2,19 +2,6 @@
 YAPF
 ====
 
-.. image:: https://badge.fury.io/py/yapf.svg
-    :target: http://badge.fury.io/py/yapf
-    :alt: PyPI version
-
-.. image:: https://travis-ci.org/google/yapf.svg?branch=master
-    :target: https://travis-ci.org/google/yapf
-    :alt: Build status
-
-.. image:: https://coveralls.io/repos/google/yapf/badge.svg?branch=master
-    :target: https://coveralls.io/r/google/yapf?branch=master
-    :alt: Coverage status
-
-
 Experiment 
 ==========
 
@@ -176,6 +163,22 @@ Some less so:
         {3, 4, 5, 6, 7, 8, 9, 0, 1, 2,
          3}, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7,
         8, 9, {0, 1, 2, 3, 4, 5, 6}, 7, 8, 9, 0)
+
+====
+YAPF
+====
+
+.. image:: https://badge.fury.io/py/yapf.svg
+    :target: http://badge.fury.io/py/yapf
+    :alt: PyPI version
+
+.. image:: https://travis-ci.org/google/yapf.svg?branch=master
+    :target: https://travis-ci.org/google/yapf
+    :alt: Build status
+
+.. image:: https://coveralls.io/repos/google/yapf/badge.svg?branch=master
+    :target: https://coveralls.io/r/google/yapf?branch=master
+    :alt: Coverage status
 
 
 Introduction
