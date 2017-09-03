@@ -99,14 +99,18 @@ def ParseCodeToTree(code):
   try:
     # Try to parse using a Python 3 grammar, which is more permissive (print and
     # exec are not keywords).
-    parser_driver = driver.Driver(_GRAMMAR_FOR_PY3, convert=pytree.convert)
-    tree = parser_driver.parse_string(code, debug=False)
+    parser_driver = driver.Driver(
+        _GRAMMAR_FOR_PY3, convert=pytree.convert)
+    tree = parser_driver.parse_string(
+        code, debug=False)
   except parse.ParseError:
     # Now try to parse using a Python 2 grammar; If this fails, then
     # there's something else wrong with the code.
     try:
-      parser_driver = driver.Driver(_GRAMMAR_FOR_PY2, convert=pytree.convert)
-      tree = parser_driver.parse_string(code, debug=False)
+      parser_driver = driver.Driver(
+          _GRAMMAR_FOR_PY2, convert=pytree.convert)
+      tree = parser_driver.parse_string(
+          code, debug=False)
     except parse.ParseError:
       # Raise a syntax error if the code is invalid python syntax.
       try:
@@ -146,7 +150,8 @@ def InsertNodesBefore(new_nodes, target):
     RuntimeError: if the tree is corrupted, or the insertion would corrupt it.
   """
   for node in new_nodes:
-    _InsertNodeAt(node, target, after=False)
+    _InsertNodeAt(
+        node, target, after=False)
 
 
 def InsertNodesAfter(new_nodes, target):
@@ -161,7 +166,8 @@ def InsertNodesAfter(new_nodes, target):
     RuntimeError: if the tree is corrupted, or the insertion would corrupt it.
   """
   for node in reversed(new_nodes):
-    _InsertNodeAt(node, target, after=True)
+    _InsertNodeAt(
+        node, target, after=True)
 
 
 def _InsertNodeAt(new_node, target, after=False):
@@ -288,7 +294,8 @@ def _PytreeNodeRepr(node):
   """Like pytree.Node.__repr__, but names instead of numbers for tokens."""
   if isinstance(node, pytree.Node):
     return '%s(%s, %r)' % (node.__class__.__name__, NodeName(node),
-                           [_PytreeNodeRepr(c) for c in node.children])
+                           [_PytreeNodeRepr(c)
+                            for c in node.children])
   if isinstance(node, pytree.Leaf):
     return '%s(%s, %r)' % (node.__class__.__name__, NodeName(node), node.value)
 

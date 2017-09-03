@@ -112,7 +112,8 @@ def main(argv):
       '--no-local-style',
       action='store_true',
       help="don't search for local style definition")
-  parser.add_argument('--verify', action='store_true', help=argparse.SUPPRESS)
+  parser.add_argument(
+      '--verify', action='store_true', help=argparse.SUPPRESS)
   parser.add_argument(
       '-p',
       '--parallel',
@@ -125,7 +126,8 @@ def main(argv):
       action='store_true',
       help='Print out file names while processing')
 
-  parser.add_argument('files', nargs='*')
+  parser.add_argument(
+      'files', nargs='*')
   args = parser.parse_args(argv[1:])
 
   if args.version:
@@ -137,8 +139,10 @@ def main(argv):
     print('[style]')
     for option, docstring in sorted(style.Help().items()):
       for line in docstring.splitlines():
-        print('#', line and ' ' or '', line, sep='')
-      print(option.lower(), '=', style.Get(option), sep='')
+        print(
+            '#', line and ' ' or '', line, sep='')
+      print(
+          option.lower(), '=', style.Get(option), sep='')
       print()
     return 0
 
@@ -167,7 +171,8 @@ def main(argv):
     if style_config is None and not args.no_local_style:
       style_config = file_resources.GetDefaultStyleForDir(os.getcwd())
 
-    source = [line.rstrip() for line in original_source]
+    source = [line.rstrip()
+              for line in original_source]
     reformatted_source, _ = yapf_api.FormatCode(
         py3compat.unicode('\n'.join(source) + '\n'),
         filename='<stdin>',

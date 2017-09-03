@@ -92,7 +92,8 @@ class FormatDecisionState(object):
     new.first_indent = self.first_indent
     new.newline = self.newline
     new.previous = self.previous
-    new.stack = [state.Clone() for state in self.stack]
+    new.stack = [state.Clone()
+                 for state in self.stack]
     return new
 
   def __eq__(self, other):
@@ -469,7 +470,8 @@ class FormatDecisionState(object):
 
     spaces = current.spaces_required_before
     if not dry_run:
-      current.AddWhitespacePrefix(newlines_before=0, spaces=spaces)
+      current.AddWhitespacePrefix(
+          newlines_before=0, spaces=spaces)
 
     if previous.OpensScope():
       if not current.is_comment:
@@ -508,7 +510,8 @@ class FormatDecisionState(object):
     self.column = self._GetNewlineColumn()
 
     if not dry_run:
-      current.AddWhitespacePrefix(newlines_before=1, spaces=self.column)
+      current.AddWhitespacePrefix(
+          newlines_before=1, spaces=self.column)
 
     if not current.is_comment:
       self.stack[-1].last_space = self.column

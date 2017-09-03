@@ -58,7 +58,8 @@ class UnwrappedLine(object):
         # Note, 'index' is the index to the previous token.
         tok.previous_token = self._tokens[index]
         self._tokens[index].next_token = tok
-        self.line_complexity += complexity_mod.ComplexityPenalty(tok, tok.previous_token)
+        self.line_complexity += complexity_mod.ComplexityPenalty(
+            tok, tok.previous_token)
 
   def CalculateFormattingInformation(self):
     """Calculate the split penalty and total length for the tokens."""
@@ -173,7 +174,8 @@ class UnwrappedLine(object):
 
   def __repr__(self):  # pragma: no cover
     tokens_repr = ','.join(
-        ['{0}({1!r})'.format(tok.name, tok.value) for tok in self._tokens])
+        ['{0}({1!r})'.format(tok.name, tok.value)
+         for tok in self._tokens])
     return 'UnwrappedLine(depth={0}, tokens=[{1}])'.format(
         self.depth, tokens_repr)
 
@@ -394,7 +396,8 @@ def _CanBreakBefore(prev_token, cur_token):
     if pval == 'yield' and cval == 'from':
       # Don't break before a yield argument.
       return False
-    if pval in {'async', 'await'} and cval in {'def', 'with', 'for'}:
+    if pval in {'async', 'await'
+               } and cval in {'def', 'with', 'for'}:
       # Don't break after sync keywords.
       return False
   if cur_token.split_penalty >= split_penalty.UNBREAKABLE:

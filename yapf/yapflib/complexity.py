@@ -1,6 +1,5 @@
 from yapf.yapflib import style
 
-
 # Number of columns (not counting indents) that a
 # complex line is allowed to occupy.
 COMPLEX_EFFECTIVE_COLUMN_LIMIT = 60

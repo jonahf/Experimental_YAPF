@@ -252,7 +252,8 @@ class _SubtypeAssigner(pytree_visitor.PyTreeVisitor):
     #     '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
     for child in node.children:
       if isinstance(child, pytree.Leaf) and child.value == '@':
-        _AppendTokenSubtype(child, subtype=format_token.Subtype.DECORATOR)
+        _AppendTokenSubtype(
+            child, subtype=format_token.Subtype.DECORATOR)
       self.Visit(child)
 
   def Visit_funcdef(self, node):  # pylint: disable=invalid-name
@@ -285,7 +286,8 @@ class _SubtypeAssigner(pytree_visitor.PyTreeVisitor):
       if child.value == ',':
         tname = False
       elif child.value == '=' and tname:
-        _AppendTokenSubtype(child, subtype=format_token.Subtype.TYPED_NAME)
+        _AppendTokenSubtype(
+            child, subtype=format_token.Subtype.TYPED_NAME)
         tname = False
 
   def Visit_varargslist(self, node):  # pylint: disable=invalid-name
@@ -363,7 +365,8 @@ def _AppendSubtypeRec(node, subtype, force=True):
     _AppendTokenSubtype(node, subtype)
     return
   for child in node.children:
-    _AppendSubtypeRec(child, subtype, force=force)
+    _AppendSubtypeRec(
+        child, subtype, force=force)
 
 
 def _InsertPseudoParentheses(node):
@@ -381,7 +384,8 @@ def _InsertPseudoParentheses(node):
     # A comment was inserted before the value, which is a pytree.Leaf.
     # Encompass the dictionary's value into an ATOM node.
     last = first.next_sibling
-    new_node = pytree.Node(syms.atom, [first.clone(), last.clone()])
+    new_node = pytree.Node(syms.atom, [first.clone(),
+                                       last.clone()])
     node.replace(new_node)
     node = new_node
     last.remove()
