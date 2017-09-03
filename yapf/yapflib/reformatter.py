@@ -34,6 +34,7 @@ from yapf.yapflib import line_joiner
 from yapf.yapflib import pytree_utils
 from yapf.yapflib import style
 from yapf.yapflib import verifier
+from yapf.yapflib import complexity as complexity_mod
 
 
 def Reformat(uwlines, verify=False, lines=None):
@@ -57,7 +58,10 @@ def Reformat(uwlines, verify=False, lines=None):
     _FormatFirstToken(first_token, uwline.depth, prev_uwline, final_lines)
 
     indent_amt = indent_width * uwline.depth
-    state = format_decision_state.FormatDecisionState(uwline, indent_amt)
+
+    column_limit = complexity_mod.ColumnLimit(uwline, indent_amt)
+    state = format_decision_state.FormatDecisionState(uwline, indent_amt,
+                                                      column_limit)
     state.MoveStateToNextToken()
 
     if not uwline.disable:
@@ -78,16 +82,16 @@ def Reformat(uwlines, verify=False, lines=None):
       _RetainHorizontalSpacing(uwline)
       _RetainRequiredVerticalSpacing(uwline, prev_uwline, lines)
       _EmitLineUnformatted(state)
-    elif _CanPlaceOnSingleLine(uwline) and not any(tok.must_split
-                                                   for tok in uwline.tokens):
-      # The unwrapped line fits on one line.
-      while state.next_token:
-        state.AddTokenToState(newline=False, dry_run=False)
+    # elif _CanPlaceOnSingleLine(uwline) and not any(tok.must_split
+    #                                                for tok in uwline.tokens):
+    #   # The unwrapped line fits on one line.
+    #   while state.next_token:
+    #     state.AddTokenToState(newline=False, dry_run=False)
     else:
       if not _AnalyzeSolutionSpace(state):
         # Failsafe mode. If there isn't a solution to the line, then just emit
         # it as is.
-        state = format_decision_state.FormatDecisionState(uwline, indent_amt)
+        state = format_decision_state.FormatDecisionState(uwline, indent_amt, column_limit)
         state.MoveStateToNextToken()
         _RetainHorizontalSpacing(uwline)
         _RetainRequiredVerticalSpacing(uwline, prev_uwline, None)
@@ -297,7 +301,7 @@ class _StateNode(object):
 # equal penalties, we prefer states that were inserted first. During state
 # generation, we make sure that we insert states first that break the line as
 # late as possible.
-_OrderedPenalty = collections.namedtuple('OrderedPenalty', ['penalty', 'count'])
+_OrderedPenalty = collections.namedtuple('OrderedPenalty', ['penalty', 'complexity', 'count'])
 
 # An item in the prioritized BFS search queue. The 'StateNode's 'state' has
 # the given '_OrderedPenalty'.
@@ -326,12 +330,13 @@ def _AnalyzeSolutionSpace(initial_state):
 
   # Insert start element.
   node = _StateNode(initial_state, False, None)
-  heapq.heappush(p_queue, _QueueItem(_OrderedPenalty(0, count), node))
+  heapq.heappush(p_queue, _QueueItem(_OrderedPenalty(0, 0, count), node))
 
   count += 1
   while p_queue:
     item = p_queue[0]
     penalty = item.ordered_penalty.penalty
+    complexity = item.ordered_penalty.complexity
     node = item.state_node
     if not node.state.next_token:
       break
@@ -347,8 +352,8 @@ def _AnalyzeSolutionSpace(initial_state):
 
     # FIXME(morbo): Add a 'decision' element?
 
-    count = _AddNextStateToQueue(penalty, node, False, count, p_queue)
-    count = _AddNextStateToQueue(penalty, node, True, count, p_queue)
+    count = _AddNextStateToQueue(penalty, complexity, node, False, count, p_queue)
+    count = _AddNextStateToQueue(penalty, 0, node, True, count, p_queue)
 
   if not p_queue:
     # We weren't able to find a solution. Do nothing.
@@ -358,7 +363,7 @@ def _AnalyzeSolutionSpace(initial_state):
   return True
 
 
-def _AddNextStateToQueue(penalty, previous_node, newline, count, p_queue):
+def _AddNextStateToQueue(penalty, complexity, previous_node, newline, count, p_queue):
   """Add the following state to the analysis queue.
 
   Assume the current state is 'previous_node' and has been reached with a
@@ -384,9 +389,16 @@ def _AddNextStateToQueue(penalty, previous_node, newline, count, p_queue):
     return count
 
   node = _StateNode(previous_node.state, newline, previous_node)
+  if not newline and count:
+    next, prev = previous_node.state.next_token, node.state.next_token.previous_token
+    tok_complexity = complexity_mod.ComplexityPenalty(next, prev)
+    complexity += tok_complexity
+    if complexity > complexity_mod.PENALIZE_COMPLEXITY_THRESHOLD:
+      penalty += tok_complexity
   penalty += node.state.AddTokenToState(
       newline=newline, dry_run=True, must_split=must_split)
-  heapq.heappush(p_queue, _QueueItem(_OrderedPenalty(penalty, count), node))
+
+  heapq.heappush(p_queue, _QueueItem(_OrderedPenalty(penalty, complexity, count), node))
   return count + 1
 
 

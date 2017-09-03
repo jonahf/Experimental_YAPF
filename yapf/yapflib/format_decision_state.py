@@ -56,7 +56,7 @@ class FormatDecisionState(object):
       comparison.
   """
 
-  def __init__(self, line, first_indent):
+  def __init__(self, line, first_indent, column_limit):
     """Initializer.
 
     Initializes to the state after placing the first token from 'line' at
@@ -77,11 +77,11 @@ class FormatDecisionState(object):
     self.first_indent = first_indent
     self.newline = False
     self.previous = None
-    self.column_limit = style.Get('COLUMN_LIMIT')
+    self.column_limit = column_limit or style.Get('COLUMN_LIMIT')
 
   def Clone(self):
     """Clones a FormatDecisionState object."""
-    new = FormatDecisionState(self.line, self.first_indent)
+    new = FormatDecisionState(self.line, self.first_indent, self.column_limit)
     new.next_token = self.next_token
     new.column = self.column
     new.line = self.line

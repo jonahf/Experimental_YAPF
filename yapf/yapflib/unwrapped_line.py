@@ -24,6 +24,7 @@ from yapf.yapflib import py3compat
 from yapf.yapflib import pytree_utils
 from yapf.yapflib import split_penalty
 from yapf.yapflib import style
+from yapf.yapflib import complexity as complexity_mod
 
 
 class UnwrappedLine(object):
@@ -49,6 +50,7 @@ class UnwrappedLine(object):
     self.depth = depth
     self._tokens = tokens or []
     self.disable = False
+    self.line_complexity = 0
 
     if self._tokens:
       # Set up a doubly linked list.
@@ -56,6 +58,7 @@ class UnwrappedLine(object):
         # Note, 'index' is the index to the previous token.
         tok.previous_token = self._tokens[index]
         self._tokens[index].next_token = tok
+        self.line_complexity += complexity_mod.ComplexityPenalty(tok)
 
   def CalculateFormattingInformation(self):
     """Calculate the split penalty and total length for the tokens."""
@@ -119,6 +122,7 @@ class UnwrappedLine(object):
     if self._tokens:
       token.previous_token = self.last
       self.last.next_token = token
+      self.line_complexity += complexity_mod.ComplexityPenalty(token)
     self._tokens.append(token)
 
   def AppendNode(self, node):
