@@ -17,8 +17,7 @@ test_comp = [
     x for x in
     [y for y in [z for z in i
                  if z]
-     if y]
-    if x
+     if y] if x
 ]
 test_comp = [
     xxxxxxxxx

@@ -15,6 +15,169 @@ YAPF
     :alt: Coverage status
 
 
+Experiment 
+==========
+
+This is an experimental fork of Google's YAPF library. Here I'm trying to use
+complexity of a line- rather than just line length- to control breaking.
+
+I'm making a bit of a mess here so if this ever matures enough to turn into a
+pull request, it'll need to be cleaned up first. The reason for this repo being
+public is really just to share experiment results.
+
+Motivations 
+------------
+
+I like list comprehensions, and I want to write them more. I think writing in a
+declarative style is desirable compared to writing loops. In a loop, you're 
+mostly writing statements that control the looping, and incidentally the loop 
+is also generating a list. The declarative style of a list comprehension makes 
+the purpose a lot more clear - things thing is defining a list.
+
+However as soon as things get a little complicated, I abandon my list
+comprehension and write a loop instead. What stops me from growing the
+complexity is in large part formatting - complex list comprehensions are hard 
+to read if they're not formatted well, and hard to format well.
+
+The problem is not lines that have too many characters. This fits easily in
+80 characters:
+
+.. code-block:: python
+
+    test_comp = [x for x in [y for y in iterable if cond(y)] if cond(x)]
+
+This is much more easy to read if formatted like this:
+
+.. code-block:: python
+
+    test_comp = [
+        x for x in [y for y in iterable 
+                    if cond(y)]
+        if cond(x)
+    ]
+
+While not arguing this is the ideal or only way to format this, the notion is
+that complexity is very good reason to split a line. Lines that fit within the 
+column limit can still be too complex.
+
+Methodology 
+-----------
+
+After some experimentation, I came up with the following.
+
+1. Estimate complexity of the UnwrappedLine, and adjust "effective" column limit
+if over some a threshold. "Effective" means it takes into account indentation,
+so that if the regular column limit is 80, and you're indented 15 characters,
+and the desired effective column limit is 50, the column limit would be set to
+65 for those lines.
+
+2. Estimate line complexity when building the tree of the solution space, and
+penalize complexity above a certain threshold. This encourages splits 
+that don't put too much complexity on the same line. 
+
+Results
+-------
+
+Some promising:
+
+.. code-block:: python
+
+    def island_of_many_commas():
+        big_ol_list = [
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5,
+            6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5,
+            6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 0
+        ]
+
+    class VeryIndented(object):
+        def list_comprehensions():
+            if True:
+                if True:
+                    if True:
+                        if True:
+                            if True:
+                                # now that we're indented a lot, let's see what happens
+
+                                test_comp = [
+                                    x for x in [y
+                                                for y in iterable if cond(y)]
+                                    if cond(x)
+                                ]
+
+                                test_comp = [
+                                    xxxxxxxxxxx
+                                    for xxxxxxxxxxx in [
+                                        yyyyyyyyyy for yyyyyyyyyy in iterable
+                                        if cond(yyyyyyyyyy)
+                                    ] if cond(xxxxxxxxxxx)
+                                ]
+
+
+    class AClass(object):
+        def list_comprehensions():
+            # was: test_comp = [x for x in [y for y in iterable if cond(y)] if cond(x)]
+            test_comp = [
+                x for x in [y
+                            for y in iterable if cond(y)]
+                if cond(x)
+            ]
+
+            # was: test_comp = [xxx for xxx in [yyy for yyy in iterable if cond(yyy)] if cond(xxx)]
+            test_comp = [
+                xxx for xxx
+                in [yyy
+                    for yyy in iterable if cond(yyy)]
+                if cond(xxx)
+            ]
+
+            # was: test_comp = [xxxxxx for xxxxxx in [yyyyyy for yyyyyy in iterable if cond(yyyyyy)] if cond(xxxxxx)]
+            test_comp = [
+                xxxxxx
+                for xxxxxx in [
+                    yyyyyy for yyyyyy in iterable
+                    if cond(yyyyyy)
+                ] if cond(xxxxxx)
+            ]
+
+            # was: test_comp = [xxxxxxxxx for xxxxxxxxx in [yyyyyyyy for yyyyyyyy in iterable if cond(yyyyyyyy)] if cond(xxxxxxxxx)]
+            test_comp = [
+                xxxxxxxxx
+                for xxxxxxxxx in [
+                    yyyyyyyy for yyyyyyyy in iterable
+                    if cond(yyyyyyyy)
+                ] if cond(xxxxxxxxx)
+            ]
+
+            # was: test_comp = [xxxxxxxxxxx for xxxxxxxxxxx in [yyyyyyyyyy for yyyyyyyyyy in iterable if cond(yyyyyyyyyy)] if cond(xxxxxxxxxxx)]
+            test_comp = [
+                xxxxxxxxxxx
+                for xxxxxxxxxxx in [
+                    yyyyyyyyyy for yyyyyyyyyy in iterable
+                    if cond(yyyyyyyyyy)
+                ] if cond(xxxxxxxxxxx)
+            ]
+
+Some less so:
+
+.. code-block:: python
+
+    # was: complicated_call([a(b).c],[a(b).c],b([c]).a(),f in a(b).c,aaaaaaaaaa)
+    complicated_call([a(b).c], [a(b).c],
+                     b([c]).a(), f in a(b).c,
+                     aaaaaaaaaa)
+
+    train_wreck_call(
+        1, 2,
+        function_call(), [4], 5, 6, 7, 8, 9, 0, 1, 2,
+        3, 4, 5, 6, 7, {8, 9, 0, 1, 2, 3, 4, 5, 6,
+                        7}, 8, 9, 0, 1, 2,
+        {3, 4, 5, 6, 7, 8, 9, 0, 1, 2,
+         3}, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7,
+        8, 9, {0, 1, 2, 3, 4, 5, 6}, 7, 8, 9, 0)
+
+
 Introduction
 ============
 
