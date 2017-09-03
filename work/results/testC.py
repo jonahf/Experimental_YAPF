@@ -92,9 +92,8 @@ class FormatDecisionState(object):
         new.first_indent = self.first_indent
         new.newline = self.newline
         new.previous = self.previous
-        new.stack = [
-            state.Clone() for state in self.stack
-        ]
+        new.stack = [state.Clone()
+                     for state in self.stack]
         return new
 
     def __eq__(self, other):
@@ -340,11 +339,9 @@ class FormatDecisionState(object):
             # the remaining line, but it will fit on a line by itself, then go ahead
             # and split before the call.
             opening = _GetOpeningBracket(current)
-            if (opening and opening.value == '('
-                    and opening.previous_token and
-                (opening.previous_token.is_name or
-                 opening.previous_token.value in {'*', '**'
-                                                  })):
+            if (opening and opening.value == '(' and opening.previous_token
+                    and (opening.previous_token.is_name
+                         or opening.previous_token.value in {'*', '**'})):
                 is_func_call = False
                 token = current
                 while token:
@@ -536,8 +533,8 @@ class FormatDecisionState(object):
                 or (previous.is_comment and previous.previous_token is not None
                     and previous.previous_token.OpensScope())):
             self.stack[-1].closing_scope_indent = max(
-                0, self.stack[-1].indent -
-                style.Get('CONTINUATION_INDENT_WIDTH'))
+                0,
+                self.stack[-1].indent - style.Get('CONTINUATION_INDENT_WIDTH'))
 
             self.stack[-1].split_before_closing_bracket = True
 
@@ -686,8 +683,7 @@ class FormatDecisionState(object):
             if format_token.Subtype.DICTIONARY_KEY_PART in current.subtypes:
                 self.stack[-2].last_space = self.stack[-2].indent
             else:
-                self.stack[-2].last_space = self.stack[
-                    -1].last_space
+                self.stack[-2].last_space = self.stack[-1].last_space
             self.stack.pop()
             self.paren_level -= 1
 

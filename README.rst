@@ -65,18 +65,30 @@ that don't put too much complexity on the same line.
 Results
 -------
 
-Some promising:
+Some promising, some less so:
 
 .. code-block:: python
 
     def island_of_many_commas():
         big_ol_list = [
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5,
-            6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5,
-            6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0,
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 0
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8,
+            9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7,
+            8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
         ]
+
+        # was: complicated_call([a(b).c],[a(b).c],b([c]).a(),f in a(b).c,aaaaaaaaaa)
+        complicated_call([a(b).c], [a(b).c],
+                         b([c]).a(), f in a(b).c, aaaaaaaaaa)
+
+        train_wreck_call(
+            1, 2,
+            function_call(), [4], 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5,
+            6, 7, {8, 9, 0, 1, 2, 3, 4, 5, 6, 7}, 8, 9, 0, 1, 2, {
+                3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3
+            }, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+            {0, 1, 2, 3, 4, 5, 6}, 7, 8, 9, 0)
+
 
     class VeryIndented(object):
         def list_comprehensions():
@@ -89,7 +101,8 @@ Some promising:
 
                                 test_comp = [
                                     x for x in [y
-                                                for y in iterable if cond(y)]
+                                                for y in iterable
+                                                if cond(y)]
                                     if cond(x)
                                 ]
 
@@ -107,34 +120,34 @@ Some promising:
             # was: test_comp = [x for x in [y for y in iterable if cond(y)] if cond(x)]
             test_comp = [
                 x for x in [y
-                            for y in iterable if cond(y)]
+                            for y in iterable
+                            if cond(y)]
                 if cond(x)
             ]
 
             # was: test_comp = [xxx for xxx in [yyy for yyy in iterable if cond(yyy)] if cond(xxx)]
             test_comp = [
-                xxx for xxx
-                in [yyy
-                    for yyy in iterable if cond(yyy)]
+                xxx for xxx in [yyy
+                                for yyy in iterable
+                                if cond(yyy)]
                 if cond(xxx)
             ]
 
             # was: test_comp = [xxxxxx for xxxxxx in [yyyyyy for yyyyyy in iterable if cond(yyyyyy)] if cond(xxxxxx)]
             test_comp = [
-                xxxxxx
-                for xxxxxx in [
-                    yyyyyy for yyyyyy in iterable
-                    if cond(yyyyyy)
-                ] if cond(xxxxxx)
+                xxxxxx for xxxxxx in
+                [yyyyyy for yyyyyy in iterable
+                 if cond(yyyyyy)]
+                if cond(xxxxxx)
             ]
 
             # was: test_comp = [xxxxxxxxx for xxxxxxxxx in [yyyyyyyy for yyyyyyyy in iterable if cond(yyyyyyyy)] if cond(xxxxxxxxx)]
             test_comp = [
                 xxxxxxxxx
-                for xxxxxxxxx in [
-                    yyyyyyyy for yyyyyyyy in iterable
-                    if cond(yyyyyyyy)
-                ] if cond(xxxxxxxxx)
+                for xxxxxxxxx in
+                [yyyyyyyy for yyyyyyyy in iterable
+                 if cond(yyyyyyyy)]
+                if cond(xxxxxxxxx)
             ]
 
             # was: test_comp = [xxxxxxxxxxx for xxxxxxxxxxx in [yyyyyyyyyy for yyyyyyyyyy in iterable if cond(yyyyyyyyyy)] if cond(xxxxxxxxxxx)]
@@ -146,23 +159,6 @@ Some promising:
                 ] if cond(xxxxxxxxxxx)
             ]
 
-Some less so:
-
-.. code-block:: python
-
-    # was: complicated_call([a(b).c],[a(b).c],b([c]).a(),f in a(b).c,aaaaaaaaaa)
-    complicated_call([a(b).c], [a(b).c],
-                     b([c]).a(), f in a(b).c,
-                     aaaaaaaaaa)
-
-    train_wreck_call(
-        1, 2,
-        function_call(), [4], 5, 6, 7, 8, 9, 0, 1, 2,
-        3, 4, 5, 6, 7, {8, 9, 0, 1, 2, 3, 4, 5, 6,
-                        7}, 8, 9, 0, 1, 2,
-        {3, 4, 5, 6, 7, 8, 9, 0, 1, 2,
-         3}, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7,
-        8, 9, {0, 1, 2, 3, 4, 5, 6}, 7, 8, 9, 0)
 
 ====
 YAPF

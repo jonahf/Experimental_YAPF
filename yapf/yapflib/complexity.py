@@ -3,15 +3,15 @@ from yapf.yapflib import style
 
 # Number of columns (not counting indents) that a
 # complex line is allowed to occupy.
-COMPLEX_EFFECTIVE_COLUMN_LIMIT = 50
+COMPLEX_EFFECTIVE_COLUMN_LIMIT = 60
 
 # Threshold after which the line is considered complex,
 # and the column limit is changed by a certain amount.
-COMPLEX_LINE_THRESHOLD = 75
+COMPLEX_LINE_THRESHOLD = 120
 
 # Complexity threshold after which penalties will be added
 # for each additional token added to the line
-PENALIZE_COMPLEXITY_THRESHOLD = 100
+PENALIZE_COMPLEXITY_THRESHOLD = 75
 
 
 def ColumnLimit(uwline, indent_amt):
@@ -58,15 +58,15 @@ def ComplexityPenalty(next_token, previous_token=None):
       if p_token.name not in {"NAME", "RPAR"}:
         result += 40
 
-  if n_token_value in {"for", "while", "do"}:
-    result += 30
+  if n_token_value in {"for", "while", "do", "in"}:
+    result += 20
 
   if p_token_value in {"[", "{"}:
-    result += 15
+    result += 10
   if n_token_value in {"]", "}"}:
     result += 30
 
-  if p_token_value in {".", "in", "not", "and", "or"}:
+  if p_token_value in {".", "not", "and", "or"}:
     result += 2
 
   if p_token_value in {"(", ")", ",", "=", "+", "-", "*", "/"}:
