@@ -19,7 +19,7 @@ I like list comprehensions, and I want to write them more. I think writing in a
 declarative style is desirable compared to writing loops. In a loop, you're 
 mostly writing statements that control the looping, and incidentally the loop 
 is also generating a list. The declarative style of a list comprehension makes 
-the purpose a lot more clear - things thing is defining a list.
+the purpose a lot clearer - this thing is defining a list.
 
 However as soon as things get a little complicated, I abandon my list
 comprehension and write a loop instead. What stops me from growing the
@@ -33,7 +33,7 @@ The problem is not lines that have too many characters. This fits easily in
 
     test_comp = [x for x in [y for y in iterable if cond(y)] if cond(x)]
 
-This is much more easy to read if formatted like this:
+This is much easier to read if formatted like this:
 
 .. code-block:: python
 
