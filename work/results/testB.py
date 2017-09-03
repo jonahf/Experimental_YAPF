@@ -76,8 +76,9 @@ class VeryIndented(object):
                     if True:
                         if True:
                             test_comp = [
-                                x for x in [y for y in iterable
-                                            if cond(y)] if cond(x)
+                                x for x in [y
+                                            for y in iterable if cond(y)]
+                                if cond(x)
                             ]
                             test_comp = [
                                 xxxxxxxxxxx
@@ -91,14 +92,16 @@ class VeryIndented(object):
 class AClass(object):
     def list_comprehensions():
         test_comp = [
-            x for x in [y for y in iterable
-                        if cond(y)] if cond(x)
+            x for x in [y
+                        for y in iterable if cond(y)]
+            if cond(x)
         ]
 
         test_comp = [
-            xxx for xxx in
-            [yyy for yyy in iterable
-             if cond(yyy)] if cond(xxx)
+            xxx for xxx
+            in [yyy
+                for yyy in iterable if cond(yyy)]
+            if cond(xxx)
         ]
 
         test_comp = [

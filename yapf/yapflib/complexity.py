@@ -47,6 +47,10 @@ def ComplexityPenalty(next_token, previous_token=None):
   result = 0
   if n_token_value in {"if", "elif", "else"}:
     result += 35
+    if p_token != n_token:
+        # print p_token.value, n_token.value
+        if p_token.name != "NAME":
+          result += 40
 
   if n_token_value in {"for", "while", "do"}:
     result += 30

@@ -58,7 +58,7 @@ class UnwrappedLine(object):
         # Note, 'index' is the index to the previous token.
         tok.previous_token = self._tokens[index]
         self._tokens[index].next_token = tok
-        self.line_complexity += complexity_mod.ComplexityPenalty(tok)
+        self.line_complexity += complexity_mod.ComplexityPenalty(tok, tok.previous_token)
 
   def CalculateFormattingInformation(self):
     """Calculate the split penalty and total length for the tokens."""
