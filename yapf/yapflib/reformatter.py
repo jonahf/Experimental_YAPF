@@ -74,7 +74,8 @@ def Reformat(uwlines, verify=False, lines=None):
         # region.
         _RetainRequiredVerticalSpacingBetweenTokens(uwline.first,
                                                     prev_uwline.last, lines)
-      if any(tok.is_comment for tok in uwline.tokens):
+      if any(tok.is_comment
+             for tok in uwline.tokens):
         _RetainVerticalSpacingBeforeComments(uwline)
 
     if (_LineContainsI18n(uwline) or uwline.disable or
@@ -91,7 +92,8 @@ def Reformat(uwlines, verify=False, lines=None):
       if not _AnalyzeSolutionSpace(state):
         # Failsafe mode. If there isn't a solution to the line, then just emit
         # it as is.
-        state = format_decision_state.FormatDecisionState(uwline, indent_amt, column_limit)
+        state = format_decision_state.FormatDecisionState(
+            uwline, indent_amt, column_limit)
         state.MoveStateToNextToken()
         _RetainHorizontalSpacing(uwline)
         _RetainRequiredVerticalSpacing(uwline, prev_uwline, None)
@@ -192,7 +194,8 @@ def _EmitLineUnformatted(state):
                  state.next_token.lineno > previous_lineno)
 
     prev_lineno = state.next_token.lineno
-    state.AddTokenToState(newline=newline, dry_run=False)
+    state.AddTokenToState(
+        newline=newline, dry_run=False)
 
 
 def _LineContainsI18n(uwline):
@@ -218,7 +221,8 @@ def _LineContainsI18n(uwline):
     index = 0
     while index < length - 1:
       if (uwline.tokens[index + 1].value == '(' and
-          uwline.tokens[index].value in style.Get('I18N_FUNCTION_CALL')):
+          uwline.tokens[index].value in style.Get(
+              'I18N_FUNCTION_CALL')):
         return True
       index += 1
 
@@ -227,7 +231,8 @@ def _LineContainsI18n(uwline):
 
 def _LineHasContinuationMarkers(uwline):
   """Return true if the line has continuation markers in it."""
-  return any(tok.is_continuation for tok in uwline.tokens)
+  return any(tok.is_continuation
+             for tok in uwline.tokens)
 
 
 def _CanPlaceOnSingleLine(uwline):
@@ -247,8 +252,10 @@ def _CanPlaceOnSingleLine(uwline):
     last_index = -2
   if last is None:
     return True
-  return (last.total_length + indent_amt <= style.Get('COLUMN_LIMIT') and
-          not any(tok.is_comment for tok in uwline.tokens[:last_index]))
+  return (last.total_length + indent_amt <=
+          style.Get('COLUMN_LIMIT') and
+          not any(tok.is_comment
+                  for tok in uwline.tokens[:last_index]))
 
 
 def _FormatFinalLines(final_lines, verify):
@@ -261,7 +268,8 @@ def _FormatFinalLines(final_lines, verify):
         formatted_line.append(tok.whitespace_prefix)
         formatted_line.append(tok.value)
       else:
-        if (not tok.next_token.whitespace_prefix.startswith('\n') and
+        if (not tok.next_token.whitespace_prefix.startswith('\n')
+            and
             not tok.next_token.whitespace_prefix.startswith(' ')):
           if (tok.previous_token.value == ':' or
               tok.next_token.value not in ',}])'):
@@ -301,7 +309,8 @@ class _StateNode(object):
 # equal penalties, we prefer states that were inserted first. During state
 # generation, we make sure that we insert states first that break the line as
 # late as possible.
-_OrderedPenalty = collections.namedtuple('OrderedPenalty', ['penalty', 'complexity', 'count'])
+_OrderedPenalty = collections.namedtuple('OrderedPenalty',
+                                         ['penalty', 'complexity', 'count'])
 
 # An item in the prioritized BFS search queue. The 'StateNode's 'state' has
 # the given '_OrderedPenalty'.
@@ -330,7 +339,8 @@ def _AnalyzeSolutionSpace(initial_state):
 
   # Insert start element.
   node = _StateNode(initial_state, False, None)
-  heapq.heappush(p_queue, _QueueItem(_OrderedPenalty(0, 0, count), node))
+  heapq.heappush(p_queue, _QueueItem(_OrderedPenalty(0, 0, count),
+                                     node))
 
   count += 1
   while p_queue:
@@ -352,7 +362,8 @@ def _AnalyzeSolutionSpace(initial_state):
 
     # FIXME(morbo): Add a 'decision' element?
 
-    count = _AddNextStateToQueue(penalty, complexity, node, False, count, p_queue)
+    count = _AddNextStateToQueue(penalty, complexity, node, False, count,
+                                 p_queue)
     count = _AddNextStateToQueue(penalty, 0, node, True, count, p_queue)
 
   if not p_queue:
@@ -363,7 +374,8 @@ def _AnalyzeSolutionSpace(initial_state):
   return True
 
 
-def _AddNextStateToQueue(penalty, complexity, previous_node, newline, count, p_queue):
+def _AddNextStateToQueue(penalty, complexity, previous_node, newline, count,
+                         p_queue):
   """Add the following state to the analysis queue.
 
   Assume the current state is 'previous_node' and has been reached with a
@@ -398,7 +410,9 @@ def _AddNextStateToQueue(penalty, complexity, previous_node, newline, count, p_q
   penalty += node.state.AddTokenToState(
       newline=newline, dry_run=True, must_split=must_split)
 
-  heapq.heappush(p_queue, _QueueItem(_OrderedPenalty(penalty, complexity, count), node))
+  heapq.heappush(p_queue,
+                 _QueueItem(_OrderedPenalty(penalty, complexity, count),
+                            node))
   return count + 1
 
 
@@ -418,7 +432,8 @@ def _ReconstructPath(initial_state, current):
     current = current.previous
 
   for node in path:
-    initial_state.AddTokenToState(newline=node.newline, dry_run=False)
+    initial_state.AddTokenToState(
+        newline=node.newline, dry_run=False)
 
 
 def _FormatFirstToken(first_token, indent_depth, prev_uwline, final_lines):
@@ -564,7 +579,10 @@ def _SingleOrMergedLines(uwlines):
           break
         if uwline.last.value != ':':
           leaf = pytree.Leaf(
-              type=token.SEMI, value=';', context=('', (uwline.lineno, column)))
+              type=token.SEMI,
+              value=';',
+              context=('', (uwline.lineno,
+                            column)))
           uwline.AppendToken(format_token.FormatToken(leaf))
         for tok in uwlines[index].tokens:
           uwline.AppendToken(tok)

@@ -1,6 +1,5 @@
 from yapf.yapflib import style
 
-
 # Number of columns (not counting indents) that a
 # complex line is allowed to occupy.
 COMPLEX_EFFECTIVE_COLUMN_LIMIT = 60
@@ -59,16 +58,15 @@ def ComplexityPenalty(next_token, previous_token=None):
   if next in {"for", "while", "do", "in"}:
     result += 20
 
-
-  if previous in {"(","[", "{"}:
+  if previous in {"(", "[", "{"}:
     result += 10
-  if next in {")","]", "}"}:
+  if next in {")", "]", "}"}:
     result += 25
 
   if previous + next in {"()", "[]", "{}"}:
-    # () Special case. 
-    result -= 40 # undo the penalties for open and close bracker. 
-    result += 5 # the actual penalty. 
+    # () Special case.
+    result -= 40  # undo the penalties for open and close bracker.
+    result += 5  # the actual penalty.
 
   if previous in {".", "not", "and", "or"}:
     result += 2

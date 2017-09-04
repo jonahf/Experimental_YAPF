@@ -97,11 +97,12 @@ def main(argv):
   parser.add_argument(
       '--style',
       action='store',
-      help=('specify formatting style: either a style name (for example "pep8" '
-            'or "google"), or the name of a file with style settings. The '
-            'default is pep8 unless a %s or %s file located in one of the '
-            'parent directories of the source file (or current directory for '
-            'stdin)' % (style.LOCAL_STYLE, style.SETUP_CONFIG)))
+      help=
+      ('specify formatting style: either a style name (for example "pep8" '
+       'or "google"), or the name of a file with style settings. The '
+       'default is pep8 unless a %s or %s file located in one of the '
+       'parent directories of the source file (or current directory for '
+       'stdin)' % (style.LOCAL_STYLE, style.SETUP_CONFIG)))
   parser.add_argument(
       '--style-help',
       action='store_true',
@@ -112,7 +113,8 @@ def main(argv):
       '--no-local-style',
       action='store_true',
       help="don't search for local style definition")
-  parser.add_argument('--verify', action='store_true', help=argparse.SUPPRESS)
+  parser.add_argument(
+      '--verify', action='store_true', help=argparse.SUPPRESS)
   parser.add_argument(
       '-p',
       '--parallel',
@@ -125,7 +127,8 @@ def main(argv):
       action='store_true',
       help='Print out file names while processing')
 
-  parser.add_argument('files', nargs='*')
+  parser.add_argument(
+      'files', nargs='*')
   args = parser.parse_args(argv[1:])
 
   if args.version:
@@ -137,8 +140,10 @@ def main(argv):
     print('[style]')
     for option, docstring in sorted(style.Help().items()):
       for line in docstring.splitlines():
-        print('#', line and ' ' or '', line, sep='')
-      print(option.lower(), '=', style.Get(option), sep='')
+        print(
+            '#', line and ' ' or '', line, sep='')
+      print(
+          option.lower(), '=', style.Get(option), sep='')
       print()
     return 0
 
@@ -167,7 +172,8 @@ def main(argv):
     if style_config is None and not args.no_local_style:
       style_config = file_resources.GetDefaultStyleForDir(os.getcwd())
 
-    source = [line.rstrip() for line in original_source]
+    source = [line.rstrip()
+              for line in original_source]
     reformatted_source, _ = yapf_api.FormatCode(
         py3compat.unicode('\n'.join(source) + '\n'),
         filename='<stdin>',
@@ -232,8 +238,9 @@ def FormatFiles(filenames,
     workers = min(multiprocessing.cpu_count(), len(filenames))
     with concurrent.futures.ProcessPoolExecutor(workers) as executor:
       future_formats = [
-          executor.submit(_FormatFile, filename, lines, style_config,
-                          no_local_style, in_place, print_diff, verify, verbose)
+          executor.submit(_FormatFile, filename, lines,
+                          style_config, no_local_style, in_place,
+                          print_diff, verify, verbose)
           for filename in filenames
       ]
       for future in concurrent.futures.as_completed(future_formats):

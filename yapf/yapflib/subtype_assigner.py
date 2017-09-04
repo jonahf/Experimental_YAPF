@@ -91,10 +91,10 @@ class _SubtypeAssigner(pytree_visitor.PyTreeVisitor):
             else:
               _AppendFirstLeafTokenSubtype(
                   child, format_token.Subtype.DICTIONARY_VALUE)
-          elif (
-              child is not None and
-              (isinstance(child, pytree.Node) or
-               (not child.value.startswith('#') and child.value not in '{:,'))):
+          elif (child is not None and
+                (isinstance(child, pytree.Node) or
+                 (not child.value.startswith('#') and
+                  child.value not in '{:,'))):
             # Mark the first leaf of a key entry as a DICTIONARY_KEY. We
             # normally want to split before them if the dictionary cannot exist
             # on a single line.
@@ -137,8 +137,9 @@ class _SubtypeAssigner(pytree_visitor.PyTreeVisitor):
     # comp_op ::= '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not in'|'is'|'is not'
     for child in node.children:
       self.Visit(child)
-      if (isinstance(child, pytree.Leaf) and
-          child.value in {'<', '>', '==', '>=', '<=', '<>', '!=', 'in', 'is'}):
+      if (isinstance(child, pytree.Leaf) and child.value in {
+          '<', '>', '==', '>=', '<=', '<>', '!=', 'in', 'is'
+      }):
         _AppendTokenSubtype(child, format_token.Subtype.BINARY_OPERATOR)
       elif pytree_utils.NodeName(child) == 'comp_op':
         for grandchild in child.children:
@@ -252,7 +253,8 @@ class _SubtypeAssigner(pytree_visitor.PyTreeVisitor):
     #     '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
     for child in node.children:
       if isinstance(child, pytree.Leaf) and child.value == '@':
-        _AppendTokenSubtype(child, subtype=format_token.Subtype.DECORATOR)
+        _AppendTokenSubtype(
+            child, subtype=format_token.Subtype.DECORATOR)
       self.Visit(child)
 
   def Visit_funcdef(self, node):  # pylint: disable=invalid-name
@@ -285,7 +287,8 @@ class _SubtypeAssigner(pytree_visitor.PyTreeVisitor):
       if child.value == ',':
         tname = False
       elif child.value == '=' and tname:
-        _AppendTokenSubtype(child, subtype=format_token.Subtype.TYPED_NAME)
+        _AppendTokenSubtype(
+            child, subtype=format_token.Subtype.TYPED_NAME)
         tname = False
 
   def Visit_varargslist(self, node):  # pylint: disable=invalid-name
@@ -363,7 +366,8 @@ def _AppendSubtypeRec(node, subtype, force=True):
     _AppendTokenSubtype(node, subtype)
     return
   for child in node.children:
-    _AppendSubtypeRec(child, subtype, force=force)
+    _AppendSubtypeRec(
+        child, subtype, force=force)
 
 
 def _InsertPseudoParentheses(node):
@@ -381,7 +385,8 @@ def _InsertPseudoParentheses(node):
     # A comment was inserted before the value, which is a pytree.Leaf.
     # Encompass the dictionary's value into an ATOM node.
     last = first.next_sibling
-    new_node = pytree.Node(syms.atom, [first.clone(), last.clone()])
+    new_node = pytree.Node(syms.atom, [first.clone(),
+                                       last.clone()])
     node.replace(new_node)
     node = new_node
     last.remove()
@@ -390,7 +395,9 @@ def _InsertPseudoParentheses(node):
     last = _GetLastLeafNode(node)
 
   lparen = pytree.Leaf(
-      token.LPAR, u'(', context=('', (first.get_lineno(), first.column - 1)))
+      token.LPAR,
+      u'(',
+      context=('', (first.get_lineno(), first.column - 1)))
   last_lineno = last.get_lineno()
   if last.type == token.STRING and '\n' in last.value:
     last_lineno += last.value.count('\n')
@@ -400,7 +407,10 @@ def _InsertPseudoParentheses(node):
   else:
     last_column = last.column + len(last.value) + 1
   rparen = pytree.Leaf(
-      token.RPAR, u')', context=('', (last_lineno, last_column)))
+      token.RPAR,
+      u')',
+      context=('', (last_lineno,
+                    last_column)))
 
   lparen.is_pseudo = True
   rparen.is_pseudo = True

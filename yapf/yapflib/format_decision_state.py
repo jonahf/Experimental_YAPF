@@ -92,7 +92,8 @@ class FormatDecisionState(object):
     new.first_indent = self.first_indent
     new.newline = self.newline
     new.previous = self.previous
-    new.stack = [state.Clone() for state in self.stack]
+    new.stack = [state.Clone()
+                 for state in self.stack]
     return new
 
   def __eq__(self, other):
@@ -115,9 +116,11 @@ class FormatDecisionState(object):
                  self.start_of_line_level, self.lowest_level_on_line))
 
   def __repr__(self):
-    return ('column::%d, next_token::%s, paren_level::%d, stack::[\n\t%s' %
-            (self.column, repr(self.next_token), self.paren_level,
-             '\n\t'.join(repr(s) for s in self.stack) + ']'))
+    return (
+        'column::%d, next_token::%s, paren_level::%d, stack::[\n\t%s'
+        % (self.column, repr(self.next_token), self.paren_level,
+           '\n\t'.join(repr(s)
+                       for s in self.stack) + ']'))
 
   def CanSplit(self, must_split):
     """Determine if we can split before the next token.
@@ -135,8 +138,9 @@ class FormatDecisionState(object):
       return False
 
     if (not must_split and
-        format_token.Subtype.DICTIONARY_KEY_PART in current.subtypes and
-        format_token.Subtype.DICTIONARY_KEY not in current.subtypes and
+        format_token.Subtype.DICTIONARY_KEY_PART in
+        current.subtypes and format_token.Subtype.DICTIONARY_KEY
+        not in current.subtypes and
         not style.Get('ALLOW_MULTILINE_DICTIONARY_KEYS')):
       # In some situations, a dictionary may be multiline, but pylint doesn't
       # like it. So don't allow it unless forced to.
@@ -291,7 +295,8 @@ class FormatDecisionState(object):
         format_token.Subtype.DEFAULT_OR_NAMED_ASSIGN_ARG_LIST in
         current.subtypes):
       if (previous.value not in {'=', ':', '*', '**'} and
-          current.value not in ':=,)' and not _IsFunctionDefinition(previous)):
+          current.value not in ':=,)' and
+          not _IsFunctionDefinition(previous)):
         # If we're going to split the lines because of named arguments, then we
         # want to split after the opening bracket as well. But not when this is
         # part of a function definition.
@@ -332,7 +337,8 @@ class FormatDecisionState(object):
       # the remaining line, but it will fit on a line by itself, then go ahead
       # and split before the call.
       opening = _GetOpeningBracket(current)
-      if (opening and opening.value == '(' and opening.previous_token and
+      if (opening and opening.value == '(' and
+          opening.previous_token and
           (opening.previous_token.is_name or
            opening.previous_token.value in {'*', '**'})):
         is_func_call = False
@@ -469,7 +475,8 @@ class FormatDecisionState(object):
 
     spaces = current.spaces_required_before
     if not dry_run:
-      current.AddWhitespacePrefix(newlines_before=0, spaces=spaces)
+      current.AddWhitespacePrefix(
+          newlines_before=0, spaces=spaces)
 
     if previous.OpensScope():
       if not current.is_comment:
@@ -484,7 +491,8 @@ class FormatDecisionState(object):
         self.stack[-1].indent = self.column + spaces
       else:
         self.stack[-1].closing_scope_indent = (
-            self.stack[-1].indent - style.Get('CONTINUATION_INDENT_WIDTH'))
+            self.stack[-1].indent -
+            style.Get('CONTINUATION_INDENT_WIDTH'))
 
     self.column += spaces
 
@@ -508,7 +516,8 @@ class FormatDecisionState(object):
     self.column = self._GetNewlineColumn()
 
     if not dry_run:
-      current.AddWhitespacePrefix(newlines_before=1, spaces=self.column)
+      current.AddWhitespacePrefix(
+          newlines_before=1, spaces=self.column)
 
     if not current.is_comment:
       self.stack[-1].last_space = self.column
@@ -519,7 +528,8 @@ class FormatDecisionState(object):
         (previous.is_comment and previous.previous_token is not None and
          previous.previous_token.OpensScope())):
       self.stack[-1].closing_scope_indent = max(
-          0, self.stack[-1].indent - style.Get('CONTINUATION_INDENT_WIDTH'))
+          0, self.stack[-1].indent -
+          style.Get('CONTINUATION_INDENT_WIDTH'))
 
       self.stack[-1].split_before_closing_bracket = True
 
@@ -583,8 +593,9 @@ class FormatDecisionState(object):
     if (self.line.first.value in _COMPOUND_STMTS and
         (not style.Get('DEDENT_CLOSING_BRACKETS') or
          style.Get('SPLIT_BEFORE_FIRST_ARGUMENT'))):
-      token_indent = (len(self.line.first.whitespace_prefix.split('\n')[-1]) +
-                      style.Get('INDENT_WIDTH'))
+      token_indent = (
+          len(self.line.first.whitespace_prefix.split('\n')[-1]) +
+          style.Get('INDENT_WIDTH'))
       if token_indent == top_of_stack.indent:
         return top_of_stack.indent + style.Get('CONTINUATION_INDENT_WIDTH')
 
@@ -685,8 +696,9 @@ class FormatDecisionState(object):
         entry_start = current
       if current.OpensScope():
         if ((current.value == '{' or
-             (current.is_pseudo_paren and current.next_token.value == '{') and
-             format_token.Subtype.DICTIONARY_VALUE in current.subtypes) or
+             (current.is_pseudo_paren and
+              current.next_token.value == '{') and format_token.
+             Subtype.DICTIONARY_VALUE in current.subtypes) or
             ImplicitStringConcatenation(current)):
           # A dictionary entry that cannot fit on a single line shouldn't matter
           # to this calcuation. If it can't fit on a single line, then the
@@ -728,8 +740,10 @@ def _IsFunctionCallWithArguments(token):
 
 def _GetLengthOfSubtype(token, subtype, exclude=None):
   current = token
-  while (current.next_token and subtype in current.subtypes and
-         (exclude is None or exclude not in current.subtypes)):
+  while (current.next_token and
+         subtype in current.subtypes and
+         (exclude is None or
+          exclude not in current.subtypes)):
     current = current.next_token
   return current.total_length - token.total_length + 1
 

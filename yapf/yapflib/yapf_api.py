@@ -90,7 +90,8 @@ def FormatFile(filename,
       verify=verify)
   if reformatted_source.rstrip('\n'):
     lines = reformatted_source.rstrip('\n').split('\n')
-    reformatted_source = newline.join(line for line in lines) + newline
+    reformatted_source = newline.join(line
+                                      for line in lines) + newline
   if in_place:
     if original_source and original_source != reformatted_source:
       file_resources.WriteReformattedCode(filename, reformatted_source,
@@ -193,7 +194,8 @@ def ReadFile(filename, logger=None):
       lines = fd.readlines()
 
     line_ending = file_resources.LineEnding(lines)
-    source = '\n'.join(line.rstrip('\r\n') for line in lines) + '\n'
+    source = '\n'.join(line.rstrip('\r\n')
+                       for line in lines) + '\n'
     return source, line_ending, encoding
   except IOError as err:  # pragma: no cover
     if logger:
@@ -229,8 +231,8 @@ def _MarkLinesToFormat(uwlines, lines):
   """Skip sections of code that we shouldn't reformat."""
   if lines:
     for uwline in uwlines:
-      uwline.disable = not (
-          lines.intersection(range(uwline.lineno, uwline.last.lineno + 1)))
+      uwline.disable = not (lines.intersection(
+          range(uwline.lineno, uwline.last.lineno + 1)))
 
   # Now go through the lines and disable any lines explicitly marked as
   # disabled.
@@ -253,14 +255,18 @@ def _MarkLinesToFormat(uwlines, lines):
 
 def _DisableYAPF(line):
   return (
-      re.search(DISABLE_PATTERN, line.split('\n')[0].strip(), re.IGNORECASE) or
-      re.search(DISABLE_PATTERN, line.split('\n')[-1].strip(), re.IGNORECASE))
+      re.search(DISABLE_PATTERN,
+                line.split('\n')[0].strip(), re.IGNORECASE) or
+      re.search(DISABLE_PATTERN,
+                line.split('\n')[-1].strip(), re.IGNORECASE))
 
 
 def _EnableYAPF(line):
   return (
-      re.search(ENABLE_PATTERN, line.split('\n')[0].strip(), re.IGNORECASE) or
-      re.search(ENABLE_PATTERN, line.split('\n')[-1].strip(), re.IGNORECASE))
+      re.search(ENABLE_PATTERN,
+                line.split('\n')[0].strip(), re.IGNORECASE) or
+      re.search(ENABLE_PATTERN,
+                line.split('\n')[-1].strip(), re.IGNORECASE))
 
 
 def _GetUnifiedDiff(before, after, filename='code'):

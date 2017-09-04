@@ -58,7 +58,8 @@ class UnwrappedLine(object):
         # Note, 'index' is the index to the previous token.
         tok.previous_token = self._tokens[index]
         self._tokens[index].next_token = tok
-        self.line_complexity += complexity_mod.ComplexityPenalty(tok, tok.previous_token)
+        self.line_complexity += complexity_mod.ComplexityPenalty(
+            tok, tok.previous_token)
 
   def CalculateFormattingInformation(self):
     """Calculate the split penalty and total length for the tokens."""
@@ -165,15 +166,18 @@ class UnwrappedLine(object):
       A string representing the line as code.
     """
     indent = ' ' * indent_per_depth * self.depth
-    tokens_str = ' '.join(tok.value for tok in self._tokens)
+    tokens_str = ' '.join(tok.value
+                          for tok in self._tokens)
     return indent + tokens_str
 
   def __str__(self):  # pragma: no cover
     return self.AsCode()
 
   def __repr__(self):  # pragma: no cover
-    tokens_repr = ','.join(
-        ['{0}({1!r})'.format(tok.name, tok.value) for tok in self._tokens])
+    tokens_repr = ','.join([
+        '{0}({1!r})'.format(tok.name, tok.value)
+        for tok in self._tokens
+    ])
     return 'UnwrappedLine(depth={0}, tokens=[{1}])'.format(
         self.depth, tokens_repr)
 
@@ -207,7 +211,8 @@ class UnwrappedLine(object):
 
   @property
   def has_semicolon(self):
-    return any(tok.value == ';' for tok in self._tokens)
+    return any(tok.value == ';'
+               for tok in self._tokens)
 
 
 def _IsIdNumberStringToken(tok):
@@ -322,7 +327,8 @@ def _SpaceRequiredBetween(left, right):
   if lval == '.' or rval == '.':
     # Don't place spaces between dots.
     return False
-  if ((lval == '(' and rval == ')') or (lval == '[' and rval == ']') or
+  if ((lval == '(' and rval == ')') or
+      (lval == '[' and rval == ']') or
       (lval == '{' and rval == '}')):
     # Empty objects shouldn't be separted by spaces.
     return False
@@ -356,7 +362,8 @@ def _SpaceRequiredBetween(left, right):
     return False
   if (lval in pytree_utils.OPENING_BRACKETS and
       (format_token.Subtype.VARARGS_STAR in right.subtypes or
-       format_token.Subtype.KWARGS_STAR_STAR in right.subtypes)):
+       format_token.Subtype.KWARGS_STAR_STAR in right.subtypes
+      )):
     # Don't separate a '*' or '**' from the opening bracket.
     return False
   if rval == ';':

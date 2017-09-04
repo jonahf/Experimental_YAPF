@@ -73,7 +73,8 @@ class _BlankLineCalculator(pytree_visitor.PyTreeVisitor):
         self.last_comment_lineno == node.children[0].lineno - 1):
       self._SetNumNewlines(node.children[0], _NO_BLANK_LINES)
     else:
-      self._SetNumNewlines(node.children[0], self._GetNumNewlines(node))
+      self._SetNumNewlines(node.children[0],
+                           self._GetNumNewlines(node))
     for child in node.children:
       self.Visit(child)
     self.last_was_decorator = True
@@ -169,7 +170,8 @@ class _BlankLineCalculator(pytree_visitor.PyTreeVisitor):
 
 def _StartsInZerothColumn(node):
   return (_GetFirstChildLeaf(node).column == 0 or
-          (_AsyncFunction(node) and node.prev_sibling.column == 0))
+          (_AsyncFunction(node) and
+           node.prev_sibling.column == 0))
 
 
 def _AsyncFunction(node):

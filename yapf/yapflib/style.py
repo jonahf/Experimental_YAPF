@@ -47,10 +47,12 @@ def SetGlobalStyle(style):
 
 
 _STYLE_HELP = dict(
-    ALIGN_CLOSING_BRACKET_WITH_VISUAL_INDENT=textwrap.dedent("""\
+    ALIGN_CLOSING_BRACKET_WITH_VISUAL_INDENT=textwrap.
+    dedent("""\
       Align closing bracket with visual indentation."""),
     ALLOW_MULTILINE_LAMBDAS=textwrap.dedent("""\
-      Allow lambdas to be formatted on more than one line."""),
+      Allow lambdas to be formatted on more than one line."""
+                                           ),
     ALLOW_MULTILINE_DICTIONARY_KEYS=textwrap.dedent("""\
       Allow dictionary keys to exist on multiple lines. For example:
 
@@ -61,7 +63,8 @@ _STYLE_HELP = dict(
         }"""),
     ALLOW_SPLIT_BEFORE_DICT_VALUE=textwrap.dedent("""\
       Allow splits before the dictionary value."""),
-    BLANK_LINE_BEFORE_NESTED_CLASS_OR_DEF=textwrap.dedent("""\
+    BLANK_LINE_BEFORE_NESTED_CLASS_OR_DEF=textwrap.dedent(
+        """\
       Insert a blank line before a 'def' or 'class' immediately nested
       within another 'def' or 'class'. For example:
 
@@ -70,7 +73,8 @@ _STYLE_HELP = dict(
           def method():
             ..."""),
     BLANK_LINE_BEFORE_CLASS_DOCSTRING=textwrap.dedent("""\
-      Insert a blank line before a class-level docstring."""),
+      Insert a blank line before a class-level docstring."""
+                                                     ),
     COALESCE_BRACKETS=textwrap.dedent("""\
       Do not split consecutive brackets. Only relevant when
       dedent_closing_brackets is set. For example:
@@ -108,7 +112,8 @@ _STYLE_HELP = dict(
             transform=Transformation.AVERAGE(window=timedelta(seconds=60)),
             start_ts=now()-timedelta(days=3),
             end_ts=now(),
-        )        # <--- this bracket is dedented and on a separate line"""),
+        )        # <--- this bracket is dedented and on a separate line"""
+                                           ),
     EACH_DICT_ENTRY_ON_SEPARATE_LINE=textwrap.dedent("""\
       Place each dictionary entry onto its own line."""),
     I18N_COMMENT=textwrap.dedent("""\
@@ -132,8 +137,10 @@ _STYLE_HELP = dict(
     INDENT_WIDTH=textwrap.dedent("""\
       The number of columns to use for indentation."""),
     JOIN_MULTIPLE_LINES=textwrap.dedent("""\
-      Join short lines into one line. E.g., single line 'if' statements."""),
-    NO_SPACES_AROUND_SELECTED_BINARY_OPERATORS=textwrap.dedent("""\
+      Join short lines into one line. E.g., single line 'if' statements."""
+                                       ),
+    NO_SPACES_AROUND_SELECTED_BINARY_OPERATORS=textwrap.
+    dedent("""\
       Do not include spaces around selected binary operators. For example:
 
         1 + 2 * 3 - 4 / 5
@@ -143,16 +150,20 @@ _STYLE_HELP = dict(
         1 + 2*3 - 4/5
 
       """),
-    SPACE_BETWEEN_ENDING_COMMA_AND_CLOSING_BRACKET=textwrap.dedent("""\
+    SPACE_BETWEEN_ENDING_COMMA_AND_CLOSING_BRACKET=textwrap.
+    dedent("""\
       Insert a space between the ending comma and closing bracket of a list,
       etc."""),
     SPACES_AROUND_POWER_OPERATOR=textwrap.dedent("""\
       Use spaces around the power operator."""),
-    SPACES_AROUND_DEFAULT_OR_NAMED_ASSIGN=textwrap.dedent("""\
+    SPACES_AROUND_DEFAULT_OR_NAMED_ASSIGN=textwrap.dedent(
+        """\
       Use spaces around default or named assigns."""),
     SPACES_BEFORE_COMMENT=textwrap.dedent("""\
-      The number of spaces required before a trailing comment."""),
-    SPLIT_ARGUMENTS_WHEN_COMMA_TERMINATED=textwrap.dedent("""\
+      The number of spaces required before a trailing comment."""
+                                         ),
+    SPLIT_ARGUMENTS_WHEN_COMMA_TERMINATED=textwrap.dedent(
+        """\
       Split before arguments if the argument list is terminated by a
       comma."""),
     SPLIT_BEFORE_BITWISE_OPERATOR=textwrap.dedent("""\
@@ -175,11 +186,14 @@ _STYLE_HELP = dict(
     SPLIT_BEFORE_NAMED_ASSIGNS=textwrap.dedent("""\
       Split named assignments onto individual lines."""),
     SPLIT_PENALTY_AFTER_OPENING_BRACKET=textwrap.dedent("""\
-      The penalty for splitting right after the opening bracket."""),
+      The penalty for splitting right after the opening bracket."""
+                                                       ),
     SPLIT_PENALTY_AFTER_UNARY_OPERATOR=textwrap.dedent("""\
-      The penalty for splitting the line after a unary operator."""),
+      The penalty for splitting the line after a unary operator."""
+                                                      ),
     SPLIT_PENALTY_BEFORE_IF_EXPR=textwrap.dedent("""\
-      The penalty for splitting right before an if expression."""),
+      The penalty for splitting right before an if expression."""
+                                                ),
     SPLIT_PENALTY_BITWISE_OPERATOR=textwrap.dedent("""\
       The penalty of splitting the line around the '&', '|', and '^'
       operators."""),
@@ -311,12 +325,14 @@ def _GetStyleFactory(style):
 
 def _StringListConverter(s):
   """Option value converter for a comma-separated list of strings."""
-  return [part.strip() for part in s.split(',')]
+  return [part.strip()
+          for part in s.split(',')]
 
 
 def _StringSetConverter(s):
   """Option value converter for a comma-separated set of strings."""
-  return set(part.strip() for part in s.split(','))
+  return set(part.strip()
+             for part in s.split(','))
 
 
 def _BoolConverter(s):
@@ -348,8 +364,10 @@ _STYLE_OPTION_VALUE_CONVERTER = dict(
     INDENT_DICTIONARY_VALUE=_BoolConverter,
     INDENT_WIDTH=int,
     JOIN_MULTIPLE_LINES=_BoolConverter,
-    NO_SPACES_AROUND_SELECTED_BINARY_OPERATORS=_StringSetConverter,
-    SPACE_BETWEEN_ENDING_COMMA_AND_CLOSING_BRACKET=_BoolConverter,
+    NO_SPACES_AROUND_SELECTED_BINARY_OPERATORS=
+    _StringSetConverter,
+    SPACE_BETWEEN_ENDING_COMMA_AND_CLOSING_BRACKET=
+    _BoolConverter,
     SPACES_AROUND_POWER_OPERATOR=_BoolConverter,
     SPACES_AROUND_DEFAULT_OR_NAMED_ASSIGN=_BoolConverter,
     SPACES_BEFORE_COMMENT=int,
@@ -508,8 +526,8 @@ _GLOBAL_STYLE_FACTORY = CreatePEP8Style
 
 # The name of the file to use for global style definition.
 GLOBAL_STYLE = (os.path.join(
-    os.getenv('XDG_CONFIG_HOME') or os.path.expanduser('~/.config'), 'yapf',
-    'style'))
+    os.getenv('XDG_CONFIG_HOME') or
+    os.path.expanduser('~/.config'), 'yapf', 'style'))
 
 # The name of the file to use for directory-local style definition.
 LOCAL_STYLE = '.style.yapf'

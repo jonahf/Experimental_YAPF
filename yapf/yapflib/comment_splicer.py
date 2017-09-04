@@ -169,12 +169,15 @@ def SpliceComments(tree):
                     comment_leaf = pytree.Leaf(
                         type=token.COMMENT,
                         value=value.rstrip('\n'),
-                        context=('', (comment_lineno, comment_column)))
-                    pytree_utils.InsertNodesAfter([comment_leaf], prev_leaf[0])
+                        context=('', (comment_lineno,
+                                      comment_column)))
+                    pytree_utils.InsertNodesAfter([comment_leaf],
+                                                  prev_leaf[0])
                     comment_prefix = '\n'.join(comment_lines[1:])
                     comment_lineno += 1
 
-                rindex = (0 if '\n' not in comment_prefix.rstrip() else
+                rindex = (0
+                          if '\n' not in comment_prefix.rstrip() else
                           comment_prefix.rstrip().rindex('\n') + 1)
                 comment_column = (len(comment_prefix[rindex:]) -
                                   len(comment_prefix[rindex:].lstrip()))
@@ -228,7 +231,8 @@ def _CreateCommentsFromPrefix(comment_prefix,
       comment_leaf = pytree.Leaf(
           type=token.COMMENT,
           value='\n'.join(comment_block),
-          context=('', (new_lineno, comment_column)))
+          context=('', (new_lineno,
+                        comment_column)))
       comment_node = comment_leaf if not standalone else pytree.Node(
           pygram.python_symbols.simple_stmt, [comment_leaf])
       comments.append(comment_node)

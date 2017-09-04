@@ -284,7 +284,11 @@ class PyTreeUnwrapper(pytree_visitor.PyTreeVisitor):
       self._cur_unwrapped_line.AppendNode(leaf)
 
 
-_BRACKET_MATCH = {')': '(', '}': '{', ']': '['}
+_BRACKET_MATCH = {
+    ')': '(',
+    '}': '{',
+    ']': '['
+}
 
 
 def _MatchBrackets(uwline):

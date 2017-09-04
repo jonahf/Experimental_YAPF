@@ -187,7 +187,8 @@ class _SplitPenaltyAssigner(pytree_visitor.PyTreeVisitor):
       if name == 'power':
         if pytree_utils.NodeName(node.children[1].children[0]) != 'atom':
           # Don't split an argument list with one element if at all possible.
-          _SetStronglyConnected(node.children[1], node.children[2])
+          _SetStronglyConnected(node.children[1],
+                                node.children[2])
           _SetSplitPenalty(
               _FirstChildNode(node.children[1]), ONE_ELEMENT_ARGUMENT)
       elif (pytree_utils.NodeName(node.children[0]) == 'LSQB' and
@@ -197,14 +198,17 @@ class _SplitPenaltyAssigner(pytree_visitor.PyTreeVisitor):
         _SetStronglyConnected(node.children[1].children[2])
 
         # Still allow splitting around the operator.
-        split_before = ((name.endswith('_test') and
-                         style.Get('SPLIT_BEFORE_LOGICAL_OPERATOR')) or
-                        (name.endswith('_expr') and
-                         style.Get('SPLIT_BEFORE_BITWISE_OPERATOR')))
+        split_before = (
+            (name.endswith('_test') and
+             style.Get('SPLIT_BEFORE_LOGICAL_OPERATOR')) or
+            (name.endswith('_expr') and
+             style.Get('SPLIT_BEFORE_BITWISE_OPERATOR')))
         if split_before:
-          _SetSplitPenalty(_LastChildNode(node.children[1].children[1]), 0)
+          _SetSplitPenalty(
+              _LastChildNode(node.children[1].children[1]), 0)
         else:
-          _SetSplitPenalty(_FirstChildNode(node.children[1].children[2]), 0)
+          _SetSplitPenalty(
+              _FirstChildNode(node.children[1].children[2]), 0)
 
         # Don't split the ending bracket of a subscript list.
         _SetVeryStronglyConnected(node.children[-1])
@@ -213,7 +217,8 @@ class _SplitPenaltyAssigner(pytree_visitor.PyTreeVisitor):
           'atom'
       }:
         # Don't split an argument list with one element if at all possible.
-        _SetStronglyConnected(node.children[1], node.children[2])
+        _SetStronglyConnected(node.children[1],
+                              node.children[2])
 
   def Visit_power(self, node):  # pylint: disable=invalid-name,missing-docstring
     # power ::= atom trailer* ['**' factor]
@@ -429,7 +434,8 @@ class _SplitPenaltyAssigner(pytree_visitor.PyTreeVisitor):
     """Set an UNBREAKABLE penalty annotation on children of node."""
     for child in node.children:
       self.Visit(child)
-    start = 2 if hasattr(node.children[0], 'is_pseudo') else 1
+    start = 2 if hasattr(node.children[0],
+                         'is_pseudo') else 1
     for i in py3compat.range(start, len(node.children)):
       _SetUnbreakable(node.children[i])
 

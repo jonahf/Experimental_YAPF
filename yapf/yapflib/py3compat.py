@@ -27,7 +27,8 @@ if PY3:
   import codecs
 
   def open_with_encoding(filename, mode, encoding, newline=''):  # pylint: disable=unused-argument
-    return codecs.open(filename, mode=mode, encoding=encoding)
+    return codecs.open(
+        filename, mode=mode, encoding=encoding)
 
   import functools
   lru_cache = functools.lru_cache
@@ -110,4 +111,5 @@ class ConfigParser(configparser.ConfigParser):
   if not PY3:
 
     def read_file(self, fp, source=None):
-      self.readfp(fp, filename=source)
+      self.readfp(
+          fp, filename=source)

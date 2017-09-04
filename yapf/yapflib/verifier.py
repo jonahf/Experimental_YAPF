@@ -43,7 +43,8 @@ def VerifyCode(code):
     compile(textwrap.dedent(code).encode('UTF-8'), '<string>', 'exec')
   except SyntaxError:
     try:
-      ast.parse(textwrap.dedent(code.lstrip('\n')).lstrip(), '<string>', 'exec')
+      ast.parse(
+          textwrap.dedent(code.lstrip('\n')).lstrip(), '<string>', 'exec')
     except SyntaxError:
       try:
         normalized_code = _NormalizeCode(code)

@@ -101,7 +101,11 @@ def WriteReformattedCode(filename,
 
 def LineEnding(lines):
   """Retrieve the line ending of the original source."""
-  endings = {CRLF: 0, CR: 0, LF: 0}
+  endings = {
+      CRLF: 0,
+      CR: 0,
+      LF: 0
+  }
   for line in lines:
     if line.endswith(CRLF):
       endings[CRLF] += 1
@@ -109,7 +113,8 @@ def LineEnding(lines):
       endings[CR] += 1
     elif line.endswith(LF):
       endings[LF] += 1
-  return (sorted(endings, key=endings.get, reverse=True) or [LF])[0]
+  return (sorted(endings, key=endings.get, reverse=True) or
+          [LF])[0]
 
 
 def _FindPythonFiles(filenames, recursive, exclude):
@@ -121,7 +126,8 @@ def _FindPythonFiles(filenames, recursive, exclude):
         # TODO(morbo): Look into a version of os.walk that can handle recursion.
         python_files.extend(
             os.path.join(dirpath, f)
-            for dirpath, _, filelist in os.walk(filename) for f in filelist
+            for dirpath, _, filelist in os.walk(filename)
+            for f in filelist
             if IsPythonFile(os.path.join(dirpath, f)))
       else:
         raise errors.YapfError(
@@ -132,7 +138,8 @@ def _FindPythonFiles(filenames, recursive, exclude):
   if exclude:
     return [
         f for f in python_files
-        if not any(fnmatch.fnmatch(f, p) for p in exclude)
+        if not any(fnmatch.fnmatch(f, p)
+                   for p in exclude)
     ]
 
   return python_files

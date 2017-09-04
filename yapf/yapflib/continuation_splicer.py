@@ -40,7 +40,8 @@ def SpliceContinuations(tree):
         return pytree.Leaf(
             type=format_token.CONTINUATION,
             value=node.prefix,
-            context=('', (new_lineno, 0)))
+            context=('', (new_lineno,
+                          0)))
       return None
     num_inserted = 0
     for index, child in enumerate(node.children[:]):

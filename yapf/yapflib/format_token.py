@@ -127,7 +127,8 @@ class FormatToken(object):
                      token_indent_char * spaces)
 
     if self.is_comment:
-      comment_lines = [s.lstrip() for s in self.value.splitlines()]
+      comment_lines = [s.lstrip()
+                       for s in self.value.splitlines()]
       self.node.value = ('\n' + indent_before).join(comment_lines)
 
       # Update our own value since we are changing node value
