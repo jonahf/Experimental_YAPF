@@ -38,7 +38,8 @@ This is much easier to read if formatted like this:
 .. code-block:: python
 
     test_comp = [
-        x for x in [y for y in iterable 
+        x for x in [y
+                    for y in iterable
                     if cond(y)]
         if cond(x)
     ]
