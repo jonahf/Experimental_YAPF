@@ -39,6 +39,32 @@ def island_of_many_commas():
     train_wreck_call(1,2,function_call(),[4],5,6,7,8,9,0,1,2,3,4,5,6,7,{8,9,0,1,2,3,4,5,6,7},8,9,0,1,2,{3,4,5,6,7,8,9,0,1,2,3},4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,{0,1,2,3,4,5,6},7,8,9,0)
 
 
+def incomprehensionable():
+    # a zoo of comprehensions to play with. 
+    d = {n: n**2 for n in range(5)}
+    d = {n: True for n in range(5)}
+
+    total_length = sum(len(x) for x, y in zip(strings, validity) if y )
+
+    californian_name_lengths = sum(len(name) for name, zip_code in  zip(names, zip_codes) if zip_code in california_zip_codes)
+
+    some_dict = {k: v for k, v in [('a', 1), ('b', 2)] if v % 2 == 0}
+
+    set_of_vowels = {upper(i) for i in sentence if i in vowels}
+
+    birthdays = (day for day in list_of_days if day.has_birthday())
+    birthdays = [day for day in list_of_days if day.has_birthday()]
+
+    zvals = [zvals[i] for i, (a, b) in enumerate(pairs(zvals)) if b-a >= threshold]
+
+    not_terribly_pythonic = [i*2 for i in [j+1 for j in range(20) if (j%3)==0] if i*i>19]
+
+    for row in [[i*j for i in range(1, 8)] for j in range(1, 4)]:
+        print row
+
+    return ("\n".join(str(i)+":\t"+"*"*a.count(i) for i in range(min(a),max(a)+1)))
+
+
 class VeryIndented(object):
     def list_comprehensions():
         if True:

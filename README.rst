@@ -54,7 +54,7 @@ After some experimentation, I came up with the following.
 
 1. Estimate complexity of the UnwrappedLine, and adjust "effective" column limit
 if over some a threshold. "Effective" means it takes into account indentation,
-so that if the regular column limit is 80, and you're indented 15 characters,
+so that if the regular column limit is 80, and you're indented 12 characters,
 and the desired effective column limit is 50, the column limit would be set to
 65 for those lines.
 
@@ -68,7 +68,6 @@ Results
 Some promising, some less so:
 
 .. code-block:: python
-
     def island_of_many_commas():
         big_ol_list = [
             1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -78,7 +77,8 @@ Some promising, some less so:
         ]
 
         # was: complicated_call([a(b).c],[a(b).c],b([c]).a(),f in a(b).c,aaaaaaaaaa)
-        complicated_call([a(b).c], [a(b).c],
+        complicated_call([a(b).c],
+                         [a(b).c],
                          b([c]).a(), f in a(b).c, aaaaaaaaaa)
 
         train_wreck_call(
@@ -88,6 +88,63 @@ Some promising, some less so:
                 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3
             }, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
             {0, 1, 2, 3, 4, 5, 6}, 7, 8, 9, 0)
+
+
+    def incomprehensionable():
+        # a zoo of comprehensions to play with.
+        d = {n: n**2
+             for n in range(5)}
+        d = {n: True
+             for n in range(5)}
+
+        total_length = sum(
+            len(x)
+            for x, y in zip(strings, validity)
+            if y)
+
+        californian_name_lengths = sum(
+            len(name)
+            for name, zip_code in zip(names, zip_codes)
+            if zip_code in california_zip_codes)
+
+        some_dict = {
+            k: v
+            for k, v in [('a', 1), ('b',
+                                    2)]
+            if v % 2 == 0
+        }
+
+        set_of_vowels = {upper(i)
+                         for i in sentence
+                         if i in vowels}
+
+        birthdays = (day for day in list_of_days
+                     if day.has_birthday())
+        birthdays = [day for day in list_of_days
+                     if day.has_birthday()]
+
+        zvals = [
+            zvals[i]
+            for i, (a, b) in enumerate(pairs(zvals))
+            if b - a >= threshold
+        ]
+
+        not_terribly_pythonic = [
+            i * 2
+            for i in [j + 1
+                      for j in range(20)
+                      if (j % 3) == 0]
+            if i * i > 19
+        ]
+
+        for row in [[i * j
+                     for i in range(1, 8)]
+                    for j in range(1, 4)]:
+            print row
+
+        return ("\n".join(
+            str(i) + ":\t" + "*" * a.count(i)
+            for i in range(min(a), max(a) + 1)))
 
 
     class VeryIndented(object):
@@ -111,7 +168,8 @@ Some promising, some less so:
                                     for xxxxxxxxxxx in [
                                         yyyyyyyyyy for yyyyyyyyyy in iterable
                                         if cond(yyyyyyyyyy)
-                                    ] if cond(xxxxxxxxxxx)
+                                    ]
+                                    if cond(xxxxxxxxxxx)
                                 ]
 
 
@@ -156,8 +214,10 @@ Some promising, some less so:
                 for xxxxxxxxxxx in [
                     yyyyyyyyyy for yyyyyyyyyy in iterable
                     if cond(yyyyyyyyyy)
-                ] if cond(xxxxxxxxxxx)
+                ]
+                if cond(xxxxxxxxxxx)
             ]
+
 
 
 ====

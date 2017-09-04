@@ -47,29 +47,33 @@ def ComplexityPenalty(next_token, previous_token=None):
   if not p_token:
     p_token = n_token
 
-  p_token_value = n_token.previous_token.value
-  n_token_value = n_token.value
+  previous = n_token.previous_token.value
+  next = n_token.value
 
   result = 0
-  if n_token_value in {"if", "elif", "else"}:
+  if next in {"if", "elif", "else"}:
     result += 25
-    if p_token != n_token and n_token_value == "if":
-      # print p_token.value, n_token.value
-      if p_token.name not in {"NAME", "RPAR"}:
-        result += 40
+    if previous != next and p_token.name not in {"NAME", "RPAR"}:
+      result += 40
 
-  if n_token_value in {"for", "while", "do", "in"}:
+  if next in {"for", "while", "do", "in"}:
     result += 20
 
-  if p_token_value in {"[", "{"}:
-    result += 10
-  if n_token_value in {"]", "}"}:
-    result += 30
 
-  if p_token_value in {".", "not", "and", "or"}:
+  if previous in {"(","[", "{"}:
+    result += 10
+  if next in {")","]", "}"}:
+    result += 25
+
+  if previous + next in {"()", "[]", "{}"}:
+    # () Special case. 
+    result -= 40 # undo the penalties for open and close bracker. 
+    result += 5 # the actual penalty. 
+
+  if previous in {".", "not", "and", "or"}:
     result += 2
 
-  if p_token_value in {"(", ")", ",", "=", "+", "-", "*", "/"}:
+  if previous in {",", "=", "+", "-", "*", "/"}:
     result += 2
 
   return result

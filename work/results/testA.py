@@ -1,6 +1,4 @@
 # python yapf work/testA.py | tee work/results/testA.py
-if mytest:
-    print True
 
 test_comp = [
     x for x in [y
