@@ -57,7 +57,7 @@ After some experimentation, I came up with the following.
 if over some a threshold. "Effective" means it takes into account indentation,
 so that if the regular column limit is 80, and you're indented 12 characters,
 and the desired effective column limit is 50, the column limit would be set to
-65 for those lines.
+62 for those lines.
 
 2. Estimate line complexity when building the tree of the solution space, and
 penalize complexity above a certain threshold. This encourages splits 
